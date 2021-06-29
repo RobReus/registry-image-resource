@@ -281,11 +281,13 @@ func (source *Source) Metadata() []MetadataField {
 
 func (source *Source) AuthenticateToECR() bool {
 	logrus.Warnln("ECR integration is experimental and untested")
+	
+	var creds *credentials.Credentials
 
 	if !source.AwsInstanceProfile {
-		creds := credentials.NewStaticCredentials(source.AwsAccessKeyId, source.AwsSecretAccessKey, source.AwsSessionToken)
+		creds = credentials.NewStaticCredentials(source.AwsAccessKeyId, source.AwsSecretAccessKey, source.AwsSessionToken)
 	} else {
-		creds := credentials.NewCredentials(&ec2rolecreds.EC2RoleProvider{Client: ec2metadata.New(session.New())})
+		creds = credentials.NewCredentials(&ec2rolecreds.EC2RoleProvider{Client: ec2metadata.New(session.New())})
 	}
 
 	mySession := session.Must(session.NewSession(&aws.Config{
