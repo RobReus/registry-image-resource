@@ -16,6 +16,8 @@ import (
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/credentials"
 	"github.com/aws/aws-sdk-go/aws/credentials/stscreds"
+	"github.com/aws/aws-sdk-go/aws/credentials/ec2rolecreds"
+	"github.com/aws/aws-sdk-go/aws/ec2metadata"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/ecr"
 	"github.com/aws/aws-sdk-go/service/ecr/ecriface"
@@ -278,9 +280,16 @@ func (source *Source) Metadata() []MetadataField {
 
 func (source *Source) AuthenticateToECR() bool {
 	logrus.Warnln("ECR integration is experimental and untested")
+
+	if !source.AwsInstanceProfile {
+		creds := credentials.NewStaticCredentials(source.AwsAccessKeyId, source.AwsSecretAccessKey, source.AwsSessionToken)
+	} else {
+		creds = credentials.NewCredentials(&ec2rolecreds.EC2RoleProvider{Client: ec2metadata.New(session.New())})
+	}
+
 	mySession := session.Must(session.NewSession(&aws.Config{
 		Region:      aws.String(source.AwsRegion),
-		Credentials: credentials.NewStaticCredentials(source.AwsAccessKeyId, source.AwsSecretAccessKey, source.AwsSessionToken),
+		Credentials: creds,
 	}))
 
 	var config aws.Config
