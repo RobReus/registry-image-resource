@@ -60,6 +60,7 @@ type AwsCredentials struct {
 	AwsAccessKeyId     string `json:"aws_access_key_id,omitempty"`
 	AwsSecretAccessKey string `json:"aws_secret_access_key,omitempty"`
 	AwsSessionToken    string `json:"aws_session_token,omitempty"`
+	AwsInstanceProfile bool   `json:"aws_instance_profile,omitempty"`
 	AwsRegion          string `json:"aws_region,omitempty"`
 	AWSECRRegistryId   string `json:"aws_ecr_registry_id,omitempty"`
 	AwsRoleArn         string `json:"aws_role_arn,omitempty"`
