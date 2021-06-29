@@ -285,7 +285,7 @@ func (source *Source) AuthenticateToECR() bool {
 	if !source.AwsInstanceProfile {
 		creds := credentials.NewStaticCredentials(source.AwsAccessKeyId, source.AwsSecretAccessKey, source.AwsSessionToken)
 	} else {
-		creds = credentials.NewCredentials(&ec2rolecreds.EC2RoleProvider{Client: ec2metadata.New(session.New())})
+		creds := credentials.NewCredentials(&ec2rolecreds.EC2RoleProvider{Client: ec2metadata.New(session.New())})
 	}
 
 	mySession := session.Must(session.NewSession(&aws.Config{
